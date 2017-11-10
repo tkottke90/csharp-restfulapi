@@ -38,6 +38,28 @@ namespace TodoApi.Controllers
             return new ObjectResult(item);
         }       
 
+        [HttpPut("{id}")]
+        public IActionResult Update(long id, [FromBody] TodoItem item){
+
+            if(item == null){
+                return BadRequest();
+            }
+
+            var todo = _context.TodoItems.FirstOrDefault(t => t.Id == id);
+            if(todo == null){
+                return NotFound();
+            }
+
+            todo.IsComplete = item.IsComplete;
+            todo.Name = item.Name;
+
+            _context.TodoItems.Update(todo);
+            _context.SaveChanges();
+        
+            return new NoContentResult();
+
+        }
+
         [HttpPost]
         public IActionResult Create([FromBody] TodoItem item)
         {
